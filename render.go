@@ -5,13 +5,13 @@ import (
     "image"
     "image/color"
     "image/png"
-    //"log"
     "os"
     "sort"
 )
 
 var img image.NRGBA
 var unfilled []image.Point
+var fitness map[image.Point]int
 
 // Calculate 8-bit colour for limited colour space.
 func MakeColour(c, colours int) uint8 {
@@ -48,11 +48,17 @@ func Neighbours(pos image.Point) []image.Point {
 
 
 func ColourFitness(pixel color.NRGBA, pos image.Point) int {
+    if result, ok := fitness[pos]; ok {
+        return result
+    }
+
     var diff int
 
     for _, new_pt := range(Neighbours(pos)) {
         diff += ColourDiff(pixel, img.NRGBAAt(new_pt.X, new_pt.Y))
     }
+
+    fitness[pos] = diff
 
     return diff
 }
@@ -86,6 +92,9 @@ func Render(x_size, y_size, colours int) {
     filled_map := make(map[image.Point]bool)
 
     for i := 0; i < x_size*y_size; i++ {
+
+        fitness = make(map[image.Point]int)
+
         if i%256 == 0 {
             fmt.Printf("%d/%d done, %d elements in queue\n", i, x_size*y_size,
                     len(unfilled))
