@@ -45,11 +45,7 @@ func ColourFitness(pixel color.NRGBA, pos image.Point) int {
     return diff
 }
 
-// Based on the Rainbow Smoke algorithm by József Fejes.
-func Render(x_size, y_size, colours int) {
-
-    fmt.Println("Allocating memory...")
-    img = *image.NewNRGBA(image.Rect(0, 0, x_size, y_size))
+func NewColourList(colours int) []color.NRGBA {
     colour_list := make([]color.NRGBA, 0, colours*colours*colours)
 
     fmt.Println("Initialising...")
@@ -60,6 +56,16 @@ func Render(x_size, y_size, colours int) {
             }
         }
     }
+
+    return colour_list
+}
+
+// Based on the Rainbow Smoke algorithm by József Fejes.
+func Render(x_size, y_size, colours int) {
+
+    img = *image.NewNRGBA(image.Rect(0, 0, x_size, y_size))
+
+    colour_list := NewColourList(colours)
 
     start_pt := image.Pt(x_size / 2, y_size / 2)
 
