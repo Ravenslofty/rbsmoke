@@ -30,44 +30,6 @@ func ColourDiff(a, b color.NRGBA) int {
     return rdiff*rdiff + gdiff*gdiff + bdiff*bdiff
 }
 
-func Hue(a color.NRGBA) float64 {
-
-    var min, max uint8
-    var hue float64
-
-    if a.R < a.G {
-        min = a.R
-        max = a.G
-    } else {
-        min = a.G
-        max = a.R
-    }
-
-    if a.B < min {
-        min = a.B
-    } else if a.B > max {
-        max = a.B
-    }
-
-    if max != min {
-        if max == a.R {
-            hue = (float64(a.G) - float64(a.B)) / float64(max - min)
-        } else if max == a.G {
-            hue = 2.0 + (float64(a.B) - float64(a.R)) / float64(max - min)
-        } else {
-            hue = 4.0 + (float64(a.R) - float64(a.G)) / float64(max - min)
-        }
-    }
-
-    hue *= 60
-
-    if hue < 0 {
-        hue += 360
-    }
-
-    return hue
-}
-
 func ColourFitness(pixel color.NRGBA, pos image.Point) int {
     var diff int
 
@@ -98,8 +60,6 @@ func Render(x_size, y_size, colours int) {
             }
         }
     }
-
-    sort.Slice(colour_list, func(i, j int) bool { return Hue(colour_list[i]) < Hue(colour_list[j]) })
 
     start_pt := image.Pt(x_size / 2, y_size / 2)
 
