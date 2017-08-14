@@ -32,20 +32,6 @@ func ColourDiff(a, b color.NRGBA) int {
     return rdiff*rdiff + gdiff*gdiff + bdiff*bdiff
 }
 
-func Neighbours(pos image.Point) []image.Point {
-    var neighbours []image.Point
-
-    for x := -1; x <= +1; x++ {
-        for y := -1; y <= +1; y++ {
-            new_pt := pos.Add(image.Pt(x, y))
-            if !(x == 0 && y == 0) && new_pt.In(img.Rect) {
-                neighbours = append(neighbours, new_pt)
-            }
-        }
-    }
-
-    return neighbours
-}
 
 
 func ColourFitness(pixel color.NRGBA, pos image.Point) int {
@@ -154,7 +140,7 @@ func Render(x_size, y_size, colours int) {
         }
     }
 
-    Save("rbsmoke%08d.png", x_size*y_size)
+    Save(fmt.Sprintf("rbsmoke%08d.png", x_size*y_size))
 
     fmt.Println("Done!")
 
