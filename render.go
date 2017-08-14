@@ -3,8 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"image/png"
-	"os"
 	"sort"
 )
 
@@ -12,23 +10,6 @@ var img image.NRGBA
 var unfilled []image.Point
 var fitness []int
 var fitness_ok []bool
-
-func Save(filename string) {
-	file, err := os.Create(filename)
-
-	if err != nil {
-		fmt.Println("Couldn't open file for writing: ", err.Error())
-		return
-	}
-
-	defer file.Close()
-
-	err = png.Encode(file, img.SubImage(img.Rect))
-
-	if err != nil {
-		fmt.Println("Couldn't encode PNG: ", err.Error())
-	}
-}
 
 // Based on the Rainbow Smoke algorithm by József Fejes.
 func Render(x_size, y_size, colours int) {
