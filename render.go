@@ -11,7 +11,8 @@ import (
 
 var img image.NRGBA
 var unfilled []image.Point
-var fitness map[image.Point]int
+var fitness []int
+var fitness_ok []bool
 
 // Calculate 8-bit colour for limited colour space.
 func MakeColour(c, colours int) uint8 {
@@ -48,8 +49,10 @@ func Neighbours(pos image.Point) []image.Point {
 
 
 func ColourFitness(pixel color.NRGBA, pos image.Point) int {
-    if result, ok := fitness[pos]; ok {
-        return result
+    idx := pos.X + (*width)*pos.Y
+
+    if fitness_ok[idx] {
+        return fitness[idx]
     }
 
     var diff int
@@ -58,7 +61,8 @@ func ColourFitness(pixel color.NRGBA, pos image.Point) int {
         diff += ColourDiff(pixel, img.NRGBAAt(new_pt.X, new_pt.Y))
     }
 
-    fitness[pos] = diff
+    fitness[idx] = diff
+    fitness_ok[idx] = true
 
     return diff
 }
@@ -91,9 +95,14 @@ func Render(x_size, y_size, colours int) {
     unfilled_map := make(map[image.Point]int)
     filled_map := make(map[image.Point]bool)
 
+    fitness = make([]int, x_size*y_size)
+    fitness_ok = make([]bool, x_size*y_size)
+
     for i := 0; i < x_size*y_size; i++ {
 
-        fitness = make(map[image.Point]int)
+        for j := 0; j < x_size*y_size; j++ {
+            fitness_ok[j] = false
+        }
 
         if i%256 == 0 {
             fmt.Printf("%d/%d done, %d elements in queue\n", i, x_size*y_size,
@@ -110,7 +119,6 @@ func Render(x_size, y_size, colours int) {
             curr_pt = unfilled[0]
 
             // Discard point
-            //log.Print("Removing point: ", curr_pt)
             unfilled[len(unfilled)-1], unfilled[0] = unfilled[0], unfilled[len(unfilled)-1]
             unfilled = unfilled[:len(unfilled)-1]
             delete(unfilled_map, curr_pt)
@@ -122,7 +130,6 @@ func Render(x_size, y_size, colours int) {
         for _, new_pt := range(Neighbours(curr_pt)) {
             _, present := unfilled_map[new_pt]
             if !present && !filled_map[new_pt] {
-                //log.Print("Adding point: ", new_pt)
                 unfilled = append(unfilled, new_pt)
                 unfilled_map[new_pt] = len(unfilled)-1
             }
