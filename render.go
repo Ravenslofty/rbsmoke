@@ -82,6 +82,23 @@ func NewColourList(colours int) []color.NRGBA {
     return colour_list
 }
 
+func Save(filename string) {
+    file, err := os.Create(filename)
+
+    if err != nil {
+        fmt.Println("Couldn't open file for writing: ", err.Error())
+        return
+    }
+
+    defer file.Close()
+
+    err = png.Encode(file, img.SubImage(img.Rect))
+
+    if err != nil {
+        fmt.Println("Couldn't encode PNG: ", err.Error())
+    }
+}
+
 // Based on the Rainbow Smoke algorithm by József Fejes.
 func Render(x_size, y_size, colours int) {
 
@@ -105,8 +122,9 @@ func Render(x_size, y_size, colours int) {
         }
 
         if i%256 == 0 {
-            fmt.Printf("%d/%d done, %d elements in queue\n", i, x_size*y_size,
-                    len(unfilled))
+            fmt.Printf("%d/%d done, slice: %d map: %d\n", i, x_size*y_size,
+                    len(unfilled), len(unfilled_map))
+            Save(fmt.Sprintf("rbsmoke%08d.png", i))
         }
 
         var curr_pt image.Point
@@ -115,7 +133,7 @@ func Render(x_size, y_size, colours int) {
             curr_pt = start_pt
         } else {
             // Expensive!
-            sort.Slice(unfilled, func(j, k int) bool { return ColourFitness(colour_list[i], unfilled[j]) > ColourFitness(colour_list[i], unfilled[k]) } )
+            sort.Slice(unfilled, func(j, k int) bool { return ColourFitness(colour_list[i], unfilled[j]) < ColourFitness(colour_list[i], unfilled[k]) } )
             curr_pt = unfilled[0]
 
             // Discard point
@@ -136,21 +154,9 @@ func Render(x_size, y_size, colours int) {
         }
     }
 
+    Save("rbsmoke%08d.png", x_size*y_size)
+
     fmt.Println("Done!")
 
-    file, err := os.Create("rbsmoke.png")
-
-    if err != nil {
-        fmt.Println("Couldn't open file for writing: ", err.Error())
-        return
-    }
-
-    defer file.Close()
-
-    err = png.Encode(file, img.SubImage(img.Rect))
-
-    if err != nil {
-        fmt.Println("Couldn't encode PNG: ", err.Error())
-    }
 }
 
