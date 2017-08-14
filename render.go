@@ -30,16 +30,27 @@ func ColourDiff(a, b color.NRGBA) int {
     return rdiff*rdiff + gdiff*gdiff + bdiff*bdiff
 }
 
-func ColourFitness(pixel color.NRGBA, pos image.Point) int {
-    var diff int
+func Neighbours(pos image.Point) []image.Point {
+    var neighbours []image.Point
 
     for x := -1; x <= +1; x++ {
         for y := -1; y <= +1; y++ {
             new_pt := pos.Add(image.Pt(x, y))
             if !(x == 0 && y == 0) && new_pt.In(img.Rect) {
-                diff += ColourDiff(pixel, img.NRGBAAt(new_pt.X, new_pt.Y))
+                neighbours = append(neighbours, new_pt)
             }
         }
+    }
+
+    return neighbours
+}
+
+
+func ColourFitness(pixel color.NRGBA, pos image.Point) int {
+    var diff int
+
+    for _, new_pt := range(Neighbours(pos)) {
+        diff += ColourDiff(pixel, img.NRGBAAt(new_pt.X, new_pt.Y))
     }
 
     return diff
@@ -95,14 +106,11 @@ func Render(x_size, y_size, colours int) {
 
         img.SetNRGBA(curr_pt.X, curr_pt.Y, colour_list[i])
 
-        for x := -1; x <= +1; x++ {
-            for y := -1; y <= +1; y++ {
-                new_pt := curr_pt.Add(image.Pt(x, y))
-                _, present := unfilled_map[new_pt]
-                if !present && !(x == 0 && y == 0) && new_pt.In(img.Rect) {
-                    unfilled = append(unfilled, new_pt)
-                    unfilled_map[new_pt] = len(unfilled)-1
-                }
+        for _, new_pt := range(Neighbours(curr_pt)) {
+            _, present := unfilled_map[new_pt]
+            if !present {
+                unfilled = append(unfilled, new_pt)
+                unfilled_map[new_pt] = len(unfilled)-1
             }
         }
     }
