@@ -7,8 +7,8 @@ import (
 
 func main() {
     // TODO: make these configurable.
-    x_size := 128
-    y_size := 128
+    x_size := 64
+    y_size := 64
 
     // Since we have a single pixel per image, we approximate the number
     // of colours per channel.

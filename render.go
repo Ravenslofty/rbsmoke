@@ -5,6 +5,7 @@ import (
     "image"
     "image/color"
     "image/png"
+    //"log"
     "os"
     "sort"
 )
@@ -82,6 +83,7 @@ func Render(x_size, y_size, colours int) {
 
     unfilled = make([]image.Point, 0, x_size*y_size)
     unfilled_map := make(map[image.Point]int)
+    filled_map := make(map[image.Point]bool)
 
     for i := 0; i < x_size*y_size; i++ {
         if i%256 == 0 {
@@ -99,16 +101,19 @@ func Render(x_size, y_size, colours int) {
             curr_pt = unfilled[0]
 
             // Discard point
+            //log.Print("Removing point: ", curr_pt)
             unfilled[len(unfilled)-1], unfilled[0] = unfilled[0], unfilled[len(unfilled)-1]
             unfilled = unfilled[:len(unfilled)-1]
             delete(unfilled_map, curr_pt)
+            filled_map[curr_pt] = true
         }
 
         img.SetNRGBA(curr_pt.X, curr_pt.Y, colour_list[i])
 
         for _, new_pt := range(Neighbours(curr_pt)) {
             _, present := unfilled_map[new_pt]
-            if !present {
+            if !present && !filled_map[new_pt] {
+                //log.Print("Adding point: ", new_pt)
                 unfilled = append(unfilled, new_pt)
                 unfilled_map[new_pt] = len(unfilled)-1
             }
