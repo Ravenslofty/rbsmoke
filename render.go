@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"image"
 	"sort"
+	"time"
 )
 
 var img image.NRGBA
-var unfilled []image.Point
-var fitness []int
+var fitness []int32
 var fitness_ok []bool
 
 // Based on the Rainbow Smoke algorithm by József Fejes.
@@ -20,12 +20,14 @@ func Render(x_size, y_size, colours int) {
 
 	start_pt := image.Pt(x_size/2, y_size/2)
 
-	unfilled = make([]image.Point, 0, x_size*y_size)
-	unfilled_map := make(map[image.Point]int)
+	unfilled := make([]image.Point, 0, x_size*y_size)
+	unfilled_map := make(map[image.Point]bool)
 	filled_map := make(map[image.Point]bool)
 
-	fitness = make([]int, x_size*y_size)
+	fitness = make([]int32, x_size*y_size)
 	fitness_ok = make([]bool, x_size*y_size)
+
+	start_time := time.Now()
 
 	for i := 0; i < x_size*y_size; i++ {
 
@@ -33,9 +35,9 @@ func Render(x_size, y_size, colours int) {
 			fitness_ok[j] = false
 		}
 
-		if i%256 == 0 {
-			fmt.Printf("%d/%d done, slice: %d map: %d\n", i, x_size*y_size,
-				len(unfilled), len(unfilled_map))
+		if i%256 == 255 {
+			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\r", i, x_size*y_size,
+				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
 			Save(fmt.Sprintf("rbsmoke%08d.png", i))
 		}
 
@@ -54,16 +56,16 @@ func Render(x_size, y_size, colours int) {
 			unfilled[len(unfilled)-1], unfilled[0] = unfilled[0], unfilled[len(unfilled)-1]
 			unfilled = unfilled[:len(unfilled)-1]
 			delete(unfilled_map, curr_pt)
-			filled_map[curr_pt] = true
 		}
+
+		filled_map[curr_pt] = true
 
 		img.SetNRGBA(curr_pt.X, curr_pt.Y, colour_list[i])
 
 		for _, new_pt := range Neighbours(curr_pt) {
-			_, present := unfilled_map[new_pt]
-			if !present && !filled_map[new_pt] {
+			if !unfilled_map[new_pt] && !filled_map[new_pt] {
 				unfilled = append(unfilled, new_pt)
-				unfilled_map[new_pt] = len(unfilled) - 1
+				unfilled_map[new_pt] = true
 			}
 		}
 	}
