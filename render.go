@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"image"
-	"sort"
 	"time"
 )
 
@@ -25,7 +24,7 @@ func Render(x_size, y_size, colours int) {
 	fitness = make([]int32, x_size*y_size)
 	fitness_ok = make([]bool, x_size*y_size)
 
-        InitNeighbours()
+	InitNeighbours()
 
 	start_time := time.Now()
 
@@ -36,7 +35,7 @@ func Render(x_size, y_size, colours int) {
 		}
 
 		if i%256 == 255 {
-			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\r", i, x_size*y_size,
+			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\n", i, x_size*y_size,
 				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
 			Save(fmt.Sprintf("rbsmoke%08d.png", i))
 		}
@@ -47,13 +46,11 @@ func Render(x_size, y_size, colours int) {
 			curr_pt = start_pt
 		} else {
 			// Expensive!
-			sort.Slice(unfilled, func(j, k int) bool {
-				return ColourFitness(colour_list[i], unfilled[j]) < ColourFitness(colour_list[i], unfilled[k])
-			})
-			curr_pt = unfilled[0]
+			curr_pt_index := Select(colour_list[i], unfilled)
+			curr_pt = unfilled[curr_pt_index]
 
 			// Discard point
-			unfilled[len(unfilled)-1], unfilled[0] = unfilled[0], unfilled[len(unfilled)-1]
+			unfilled[len(unfilled)-1], unfilled[curr_pt_index] = unfilled[curr_pt_index], unfilled[len(unfilled)-1]
 			unfilled = unfilled[:len(unfilled)-1]
 			delete(unfilled_map, curr_pt)
 		}

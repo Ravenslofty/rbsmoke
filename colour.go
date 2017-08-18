@@ -53,7 +53,7 @@ func NewColourList(colours int) []color.NRGBA {
 	for r := 0; r <= colours; r++ {
 		for g := 0; g <= colours; g++ {
 			for b := 0; b <= colours; b++ {
-				colour_list = append(colour_list, MakeNRGBA(r, g, b, colours))
+				colour_list = append(colour_list, MakeNRGBA(b, g, r, colours))
 			}
 		}
 	}
