@@ -4,6 +4,8 @@ import (
 	"image"
 )
 
+var neighbour_list [][]image.Point
+
 func Neighbours(pos image.Point) []image.Point {
 	var neighbours []image.Point
 
@@ -17,4 +19,24 @@ func Neighbours(pos image.Point) []image.Point {
 	}
 
 	return neighbours
+}
+
+func InitNeighbours() {
+	h := *height
+	w := *width
+	size := h * w
+
+	neighbour_list = make([][]image.Point, size)
+
+	for i, _ := range neighbour_list {
+		neighbour_list[i] = Neighbours(FlatIndexToPoint(w, i))
+	}
+}
+
+func FlatIndexToPoint(width, index int) image.Point {
+	return image.Point{index % width, index / width}
+}
+
+func PointToFlatIndex(width int, point image.Point) int {
+	return point.X + point.Y*width
 }

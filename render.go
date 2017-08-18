@@ -8,8 +8,6 @@ import (
 )
 
 var img image.NRGBA
-var fitness []int32
-var fitness_ok []bool
 
 // Based on the Rainbow Smoke algorithm by József Fejes.
 func Render(x_size, y_size, colours int) {
@@ -26,6 +24,8 @@ func Render(x_size, y_size, colours int) {
 
 	fitness = make([]int32, x_size*y_size)
 	fitness_ok = make([]bool, x_size*y_size)
+
+        InitNeighbours()
 
 	start_time := time.Now()
 
@@ -62,7 +62,7 @@ func Render(x_size, y_size, colours int) {
 
 		img.SetNRGBA(curr_pt.X, curr_pt.Y, colour_list[i])
 
-		for _, new_pt := range Neighbours(curr_pt) {
+		for _, new_pt := range neighbour_list[PointToFlatIndex(*width, curr_pt)] {
 			if !unfilled_map[new_pt] && !filled_map[new_pt] {
 				unfilled = append(unfilled, new_pt)
 				unfilled_map[new_pt] = true
