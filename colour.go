@@ -44,17 +44,13 @@ func ColourFitness(pixel color.Color, pos image.Point) int32 {
 	return diff
 }
 
-func ColourIndex(r, g, b, colours int) int {
-	return r*colours*colours + g*colours + b
-}
-
 func NewColourList(colours int) []color.NRGBA {
-	colour_list := make([]color.NRGBA, colours*colours*colours)
+	colour_list := make([]color.NRGBA, 0, colours*colours*colours)
 
 	for r := 0; r <= colours; r++ {
 		for g := 0; g <= colours; g++ {
 			for b := 0; b <= colours; b++ {
-				colour_list[ColourIndex(r, g, b, colours)] = MakeNRGBA(r, g, b, colours)
+				colour_list = append(colour_list, MakeNRGBA(r, g, b, colours))
 			}
 		}
 	}
