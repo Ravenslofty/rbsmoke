@@ -25,18 +25,11 @@ func Render(height, width, colours int) {
 	unfilled_map := make(map[int]bool)
 	filled_map := make(map[int]bool)
 
-	fitness = make([]int32, x_size*y_size)
-	fitness_ok = make([]bool, x_size*y_size)
-
 	InitNeighbours(height, width)
 
 	start_time := time.Now()
 
 	for i := 0; i < x_size*y_size; i++ {
-
-		for j := 0; j < x_size*y_size; j++ {
-			fitness_ok[j] = false
-		}
 
 		if i%256 == 255 {
 			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\n", i, x_size*y_size,

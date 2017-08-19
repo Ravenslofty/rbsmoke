@@ -4,9 +4,6 @@ import (
 	"image/color"
 )
 
-var fitness []int32
-var fitness_ok []bool
-
 // Calculate 8-bit colour for limited colour space.
 func MakeColour(c, colours int) uint8 {
 	return uint8((c * 255) / (colours - 1))
@@ -28,18 +25,11 @@ func ColourDiff(a, b color.Color) int32 {
 }
 
 func ColourFitness(pixel color.Color, pos, width int) int32 {
-	if fitness_ok[pos] {
-		return fitness[pos]
-	}
-
 	var diff int32
 
 	for _, new_pt := range neighbour_list[pos] {
 		diff += ColourDiff(pixel, img[new_pt])
 	}
-
-	fitness[pos] = diff
-	fitness_ok[pos] = true
 
 	return diff
 }
