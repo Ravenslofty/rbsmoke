@@ -34,7 +34,7 @@ func Render(height, width, colours int) {
 		if i%256 == 255 {
 			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\n", i, x_size*y_size,
 				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
-			Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width)
+			go Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width)
 		}
 
 		var curr_pt int
