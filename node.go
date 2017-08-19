@@ -4,16 +4,18 @@ import (
 	"image"
 )
 
-var neighbour_list [][]image.Point
+var neighbour_list [][]int
 
-func Neighbours(pos image.Point) []image.Point {
-	var neighbours []image.Point
+func Neighbours(point, height, width int) []int {
+	var neighbours []int
+
+        pos := FlatIndexToPoint(width, point)
 
 	for x := -1; x <= +1; x++ {
 		for y := -1; y <= +1; y++ {
 			new_pt := pos.Add(image.Pt(x, y))
-			if !(x == 0 && y == 0) && new_pt.In(img.Rect) {
-				neighbours = append(neighbours, new_pt)
+			if !(x == 0 && y == 0) && new_pt.X >= 0 && new_pt.X < width && new_pt.Y >= 0 && new_pt.Y < height {
+				neighbours = append(neighbours, PointToFlatIndex(width, new_pt))
 			}
 		}
 	}
@@ -21,15 +23,13 @@ func Neighbours(pos image.Point) []image.Point {
 	return neighbours
 }
 
-func InitNeighbours() {
-	h := *height
-	w := *width
-	size := h * w
+func InitNeighbours(height, width int) {
+	size := height * width
 
-	neighbour_list = make([][]image.Point, size)
+	neighbour_list = make([][]int, size)
 
 	for i, _ := range neighbour_list {
-		neighbour_list[i] = Neighbours(FlatIndexToPoint(w, i))
+		neighbour_list[i] = Neighbours(i, height, width)
 	}
 }
 

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"image"
 	"image/color"
 )
 
@@ -28,21 +27,19 @@ func ColourDiff(a, b color.Color) int32 {
 	return rdiff*rdiff + gdiff*gdiff + bdiff*bdiff
 }
 
-func ColourFitness(pixel color.Color, pos image.Point) int32 {
-	idx := PointToFlatIndex(*width, pos)
-
-	if fitness_ok[idx] {
-		return fitness[idx]
+func ColourFitness(pixel color.Color, pos, width int) int32 {
+	if fitness_ok[pos] {
+		return fitness[pos]
 	}
 
 	var diff int32
 
-	for _, new_pt := range neighbour_list[PointToFlatIndex(*width, pos)] {
-		diff += ColourDiff(pixel, img.NRGBAAt(new_pt.X, new_pt.Y))
+	for _, new_pt := range neighbour_list[pos] {
+		diff += ColourDiff(pixel, img[new_pt])
 	}
 
-	fitness[idx] = diff
-	fitness_ok[idx] = true
+	fitness[pos] = diff
+	fitness_ok[pos] = true
 
 	return diff
 }

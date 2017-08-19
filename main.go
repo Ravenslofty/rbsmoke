@@ -10,14 +10,15 @@ import (
 	"runtime/pprof"
 )
 
-var width = flag.Int("w", 64, "Rendered image width")
-var height = flag.Int("h", 64, "Rendered image height")
-
-var cpuprofile = flag.String("cpuprofile", "", "write cpu profile `file`")
-var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 
 func main() {
-	flag.Parse()
+        var width = flag.Int("w", 64, "Rendered image width")
+        var height = flag.Int("h", 64, "Rendered image height")
+
+        var cpuprofile = flag.String("cpuprofile", "", "write cpu profile `file`")
+        var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+
+        flag.Parse()
 
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)
@@ -30,8 +31,8 @@ func main() {
 		defer pprof.StopCPUProfile()
 	}
 
-	x_size := *width
-	y_size := *height
+	x_size := *height
+	y_size := *width
 
 	// Since we have a single pixel per image, we approximate the number
 	// of colours per channel.

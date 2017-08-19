@@ -3,28 +3,32 @@ package main
 import (
 	"fmt"
 	"image"
+        "image/color"
 	"time"
 )
 
-var img image.NRGBA
+var img []color.NRGBA
 
 // Based on the Rainbow Smoke algorithm by József Fejes.
-func Render(x_size, y_size, colours int) {
+func Render(height, width, colours int) {
 
-	img = *image.NewNRGBA(image.Rect(0, 0, x_size, y_size))
+        x_size := width
+        y_size := height
+
+        img = make([]color.NRGBA, x_size*y_size)
 
 	colour_list := NewColourList(colours)
 
-	start_pt := image.Pt(x_size/2, y_size/2)
+	start_pt := PointToFlatIndex(width, image.Pt(width/2, height/2))
 
-	unfilled := make([]image.Point, 0, x_size*y_size)
-	unfilled_map := make(map[image.Point]bool)
-	filled_map := make(map[image.Point]bool)
+	unfilled := make([]int, 0, x_size*y_size)
+	unfilled_map := make(map[int]bool)
+	filled_map := make(map[int]bool)
 
 	fitness = make([]int32, x_size*y_size)
 	fitness_ok = make([]bool, x_size*y_size)
 
-	InitNeighbours()
+	InitNeighbours(height, width)
 
 	start_time := time.Now()
 
@@ -37,16 +41,16 @@ func Render(x_size, y_size, colours int) {
 		if i%256 == 255 {
 			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\n", i, x_size*y_size,
 				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
-			Save(fmt.Sprintf("rbsmoke%08d.png", i))
+			Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width)
 		}
 
-		var curr_pt image.Point
+		var curr_pt int
 
 		if len(unfilled) == 0 {
 			curr_pt = start_pt
 		} else {
 			// Expensive!
-			curr_pt_index := Select(colour_list[i], unfilled)
+			curr_pt_index := Select(colour_list[i], unfilled, width)
 			curr_pt = unfilled[curr_pt_index]
 
 			// Discard point
@@ -57,9 +61,9 @@ func Render(x_size, y_size, colours int) {
 
 		filled_map[curr_pt] = true
 
-		img.SetNRGBA(curr_pt.X, curr_pt.Y, colour_list[i])
+		img[curr_pt] = colour_list[i]
 
-		for _, new_pt := range neighbour_list[PointToFlatIndex(*width, curr_pt)] {
+		for _, new_pt := range neighbour_list[curr_pt] {
 			if !unfilled_map[new_pt] && !filled_map[new_pt] {
 				unfilled = append(unfilled, new_pt)
 				unfilled_map[new_pt] = true
@@ -67,7 +71,7 @@ func Render(x_size, y_size, colours int) {
 		}
 	}
 
-	Save(fmt.Sprintf("rbsmoke%08d.png", x_size*y_size))
+	Save(fmt.Sprintf("rbsmoke%08d.png", height*width), height, width)
 
 	fmt.Println("Done!")
 
