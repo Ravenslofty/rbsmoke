@@ -17,7 +17,7 @@ func Save(filename string, height, width int) {
 
 	defer file.Close()
 
-	render := image.NewNRGBA(image.Rect(0, 0, height, width))
+	render := image.NewNRGBA(image.Rect(0, 0, width, height))
 
 	for index, colour := range img {
 		point := FlatIndexToPoint(width, index)
