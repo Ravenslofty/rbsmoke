@@ -2,7 +2,7 @@ package main
 
 import (
 	"fmt"
-        "image"
+	"image"
 	"image/png"
 	"os"
 )
@@ -17,12 +17,12 @@ func Save(filename string, height, width int) {
 
 	defer file.Close()
 
-        render := image.NewNRGBA(image.Rect(0, 0, height, width))
+	render := image.NewNRGBA(image.Rect(0, 0, height, width))
 
-        for index, colour := range img {
-            point := FlatIndexToPoint(width, index)
-            render.SetNRGBA(point.X, point.Y, colour)
-        }
+	for index, colour := range img {
+		point := FlatIndexToPoint(width, index)
+		render.SetNRGBA(point.X, point.Y, colour)
+	}
 
 	err = png.Encode(file, render.SubImage(render.Rect))
 

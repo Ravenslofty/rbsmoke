@@ -10,15 +10,14 @@ import (
 	"runtime/pprof"
 )
 
-
 func main() {
-        var width = flag.Int("w", 64, "Rendered image width")
-        var height = flag.Int("h", 64, "Rendered image height")
+	var width = flag.Int("w", 64, "Rendered image width")
+	var height = flag.Int("h", 64, "Rendered image height")
 
-        var cpuprofile = flag.String("cpuprofile", "", "write cpu profile `file`")
-        var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
+	var cpuprofile = flag.String("cpuprofile", "", "write cpu profile `file`")
+	var memprofile = flag.String("memprofile", "", "write memory profile to `file`")
 
-        flag.Parse()
+	flag.Parse()
 
 	if *cpuprofile != "" {
 		f, err := os.Create(*cpuprofile)

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 	"image"
-        "image/color"
+	"image/color"
 	"time"
 )
 
@@ -12,10 +12,10 @@ var img []color.NRGBA
 // Based on the Rainbow Smoke algorithm by József Fejes.
 func Render(height, width, colours int) {
 
-        x_size := width
-        y_size := height
+	x_size := width
+	y_size := height
 
-        img = make([]color.NRGBA, x_size*y_size)
+	img = make([]color.NRGBA, x_size*y_size)
 
 	colour_list := NewColourList(colours)
 

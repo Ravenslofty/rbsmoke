@@ -23,14 +23,14 @@ func ColourDiff(a, b color.NRGBA) int32 {
 }
 
 func ColourFitness(pixel color.NRGBA, pos, width int) int32 {
-        var min_diff int32 = 255 * 255 * 3 // Max RGB difference.
+	var min_diff int32 = 255 * 255 * 3 // Max RGB difference.
 
 	for _, new_pt := range neighbour_list[pos] {
-                diff := ColourDiff(pixel, img[new_pt])
-	        if diff < min_diff {
-                    min_diff = diff
-                }
-        }
+		diff := ColourDiff(pixel, img[new_pt])
+		if diff < min_diff {
+			min_diff = diff
+		}
+	}
 
 	return min_diff
 }

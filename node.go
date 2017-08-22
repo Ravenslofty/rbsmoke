@@ -9,7 +9,7 @@ var neighbour_list [][]int
 func Neighbours(point, height, width int) []int {
 	var neighbours []int
 
-        pos := FlatIndexToPoint(width, point)
+	pos := FlatIndexToPoint(width, point)
 
 	for x := -1; x <= +1; x++ {
 		for y := -1; y <= +1; y++ {

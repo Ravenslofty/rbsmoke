@@ -5,7 +5,7 @@ import (
 )
 
 func Select(colour color.NRGBA, unfilled []int, width int) int {
-    return SelectSmallest(colour, unfilled, width)
+	return SelectSmallest(colour, unfilled, width)
 }
 
 func SelectSmallest(colour color.NRGBA, unfilled []int, width int) int {
@@ -25,7 +25,7 @@ func SelectSmallest(colour color.NRGBA, unfilled []int, width int) int {
 
 func SelectGreatest(colour color.NRGBA, unfilled []int, width int) int {
 	var best_fitness int32
-        var best_index int
+	var best_index int
 
 	for index, point := range unfilled {
 		fitness := ColourFitness(colour, point, width)
@@ -37,4 +37,3 @@ func SelectGreatest(colour color.NRGBA, unfilled []int, width int) int {
 
 	return best_index
 }
-
