@@ -14,24 +14,25 @@ func MakeNRGBA(r, g, b, colours int) color.NRGBA {
 		MakeColour(b, colours), 255}
 }
 
-func ColourDiff(a, b color.Color) int32 {
-	r1, g1, b1, _ := a.RGBA()
-	r2, g2, b2, _ := b.RGBA()
-	rdiff := int32(r1) - int32(r2)
-	gdiff := int32(g1) - int32(g2)
-	bdiff := int32(b1) - int32(b2)
+func ColourDiff(a, b color.NRGBA) int32 {
+	rdiff := int32(a.R) - int32(b.R)
+	gdiff := int32(a.G) - int32(b.G)
+	bdiff := int32(a.B) - int32(b.B)
 
 	return rdiff*rdiff + gdiff*gdiff + bdiff*bdiff
 }
 
-func ColourFitness(pixel color.Color, pos, width int) int32 {
-	var diff int32
+func ColourFitness(pixel color.NRGBA, pos, width int) int32 {
+        var min_diff int32 = 255 * 255 * 3 // Max RGB difference.
 
 	for _, new_pt := range neighbour_list[pos] {
-		diff += ColourDiff(pixel, img[new_pt])
-	}
+                diff := ColourDiff(pixel, img[new_pt])
+	        if diff < min_diff {
+                    min_diff = diff
+                }
+        }
 
-	return diff
+	return min_diff
 }
 
 func NewColourList(colours int) []color.NRGBA {
