@@ -24,7 +24,7 @@ func Save(filename string, height, width int) {
 		render.SetNRGBA(point.X, point.Y, colour)
 	}
 
-	err = png.Encode(file, render.SubImage(render.Rect))
+	err = png.Encode(file, render)
 
 	if err != nil {
 		fmt.Println("Couldn't encode PNG: ", err.Error())
