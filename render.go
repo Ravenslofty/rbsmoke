@@ -32,7 +32,7 @@ func Render(height, width, colours int) {
 	for i := 0; i < x_size*y_size; i++ {
 
 		if i%256 == 255 {
-			fmt.Printf("%d/%d done, open: %d, speed: %d px per sec\n", i, x_size*y_size,
+			fmt.Printf("%.2f%%, open: %d, speed: %d px/sec\r", float64(100*i)/float64(x_size*y_size),
 				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
 			go Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width)
 		}

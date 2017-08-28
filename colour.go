@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/lucasb-eyer/go-colorful"
 	"image/color"
+	"math"
 )
 
 // Calculate 8-bit colour for limited colour space.
@@ -30,10 +31,28 @@ func ColourDiffRgb(a, b color.NRGBA) int32 {
 func ColourDiffLab(a, b color.NRGBA) int32 {
 	// Ugly colour space hacking.
 
-	a_ := MakeColorful(a)
-	b_ := MakeColorful(b)
+	// RGB255 -> sRGB -> Linear RGB
+	// This step is needed because go-colorful uses floats internally
+	// rather than uint8. Additionally, RGB is a relative measurement, so
+	// cannot be used directly.
+	ar, ag, ab := MakeColorful(a).FastLinearRgb()
+	br, bg, bb := MakeColorful(b).FastLinearRgb()
 
-	diff := a_.DistanceLab(b_)
+	// Linear RGB -> CIE XYZ
+	// Here we transform the relative RGB system to absolute XYZ co-ordinates.
+	ax, ay, az := colorful.LinearRgbToXyz(ar, ag, ab)
+	bx, by, bz := colorful.LinearRgbToXyz(br, bg, bb)
+
+	// CIE XYZ -> CIE L*a*b*
+	// And finally, here we transform absolute XYZ to L*a*b*, which is a
+	// perception-based colour space.
+	a_l, a_a, a_b := colorful.XyzToLab(ax, ay, az)
+	b_l, b_a, b_b := colorful.XyzToLab(bx, by, bz)
+
+	// And finally we can calculate the perceived difference in colour.
+	diff := math.Sqrt((a_l-b_l)*(a_l-b_l) + (a_a-b_a)*(a_a-b_a) + (a_b - b_b))
+
+	// Yep, we just went through four colour spaces to get what we wanted.
 
 	return int32(65535.0 * diff)
 }
@@ -72,7 +91,7 @@ func NewColourList(colours int) []color.NRGBA {
 		}
 	}
 
-        Sort(colour_list)
+	Sort(colour_list)
 
 	return colour_list
 }

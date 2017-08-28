@@ -37,11 +37,11 @@ func main() {
 	// of colours per channel.
 	colours := int(math.Ceil(math.Cbrt(float64(x_size) * float64(y_size))))
 
-        // MakeRGB255 panics if colours is 1, which would require a 1x1 pixel
-        // image.
-        if colours == 1 {
-            log.Fatal("Your picture is too small, please try something larger.")
-        }
+	// MakeRGB255 panics if colours is 1, which would require a 1x1 pixel
+	// image.
+	if colours == 1 {
+		log.Fatal("Your picture is too small, please try something larger.")
+	}
 
 	fmt.Printf("Going to render a %dx%d image with %d colours per channel\n",
 		x_size, y_size, colours)

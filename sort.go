@@ -40,4 +40,3 @@ func SortHsv(colours []color.NRGBA) {
 		return h1 < h2
 	})
 }
-
