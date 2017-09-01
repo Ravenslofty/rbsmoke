@@ -7,16 +7,16 @@ import (
 // Method to select a place for the next colour to go.
 // Valid functions are SelectSmallestDifference and SelectGreatestDifference.
 // Greatest tends to run slower than smallest.
-func Select(colour color.NRGBA, unfilled []int, width int) int {
-	return SelectSmallestDifference(colour, unfilled, width)
+func Select(colour color.NRGBA, unfilled []int, width int, neighbour_list [][]int, img []color.NRGBA) int {
+	return SelectSmallestDifference(colour, unfilled, width, neighbour_list, img)
 }
 
 // Method to compute the difference between a colour and its neighbours.
 // Valid functions are ColourFitnessMinimum and ColourFitnessSum.
 // Minimum produces smooth gradients with sharp edges.
 // Sum produces very psychedelic and angular patterns.
-func ColourFitness(pixel color.NRGBA, pos, width int) int32 {
-	return ColourFitnessMinimum(pixel, pos, width)
+func ColourFitness(pixel color.NRGBA, pos, width int, neighbours []int, img []color.NRGBA) int32 {
+	return ColourFitnessMinimum(pixel, pos, width, neighbours, img)
 }
 
 // Method to compute the difference between two colours.

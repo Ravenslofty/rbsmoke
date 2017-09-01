@@ -57,10 +57,10 @@ func ColourDiffLab(a, b color.NRGBA) int32 {
 	return int32(65535.0 * diff)
 }
 
-func ColourFitnessMinimum(pixel color.NRGBA, pos, width int) int32 {
+func ColourFitnessMinimum(pixel color.NRGBA, pos, width int, neighbours []int, img []color.NRGBA) int32 {
 	var min_diff int32 = 255 * 255 * 3 // Max RGB difference.
 
-	for _, new_pt := range neighbour_list[pos] {
+	for _, new_pt := range neighbours {
 		diff := ColourDiff(pixel, img[new_pt])
 		if diff < min_diff {
 			min_diff = diff
@@ -70,10 +70,10 @@ func ColourFitnessMinimum(pixel color.NRGBA, pos, width int) int32 {
 	return min_diff
 }
 
-func ColourFitnessSum(pixel color.NRGBA, pos, width int) int32 {
+func ColourFitnessSum(pixel color.NRGBA, pos, width int, neighbours []int, img []color.NRGBA) int32 {
 	var sum_diff int32
 
-	for _, new_pt := range neighbour_list[pos] {
+	for _, new_pt := range neighbours {
 		sum_diff += ColourDiff(pixel, img[new_pt])
 	}
 

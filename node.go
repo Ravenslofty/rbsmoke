@@ -4,8 +4,6 @@ import (
 	"image"
 )
 
-var neighbour_list [][]int
-
 func Neighbours(point, height, width int) []int {
 	var neighbours []int
 
@@ -23,14 +21,16 @@ func Neighbours(point, height, width int) []int {
 	return neighbours
 }
 
-func InitNeighbours(height, width int) {
+func InitNeighbours(height, width int) [][]int {
 	size := height * width
 
-	neighbour_list = make([][]int, size)
+	neighbour_list := make([][]int, size)
 
 	for i, _ := range neighbour_list {
 		neighbour_list[i] = Neighbours(i, height, width)
 	}
+
+	return neighbour_list
 }
 
 func FlatIndexToPoint(width, index int) image.Point {

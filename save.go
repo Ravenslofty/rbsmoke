@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"image"
+	"image/color"
 	"image/png"
 	"os"
 )
 
-func Save(filename string, height, width int) {
+func Save(filename string, height, width int, img []color.NRGBA) {
 	file, err := os.Create(filename)
 
 	if err != nil {

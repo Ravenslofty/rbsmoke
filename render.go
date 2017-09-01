@@ -7,15 +7,13 @@ import (
 	"time"
 )
 
-var img []color.NRGBA
-
 // Based on the Rainbow Smoke algorithm by József Fejes.
 func Render(height, width, colours int) {
 
 	x_size := width
 	y_size := height
 
-	img = make([]color.NRGBA, x_size*y_size)
+	img := make([]color.NRGBA, x_size*y_size)
 
 	colour_list := NewColourList(colours)
 
@@ -25,7 +23,7 @@ func Render(height, width, colours int) {
 	unfilled_map := make(map[int]bool)
 	filled_map := make(map[int]bool)
 
-	InitNeighbours(height, width)
+	neighbour_list := InitNeighbours(height, width)
 
 	start_time := time.Now()
 
@@ -34,7 +32,7 @@ func Render(height, width, colours int) {
 		if i%256 == 255 {
 			fmt.Printf("%.2f%%, open: %d, speed: %d px/sec\r", float64(100*i)/float64(x_size*y_size),
 				len(unfilled), int64(i*int(time.Second))/int64(time.Now().Sub(start_time)))
-			go Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width)
+			go Save(fmt.Sprintf("rbsmoke%08d.png", i), height, width, img)
 		}
 
 		var curr_pt int
@@ -43,7 +41,7 @@ func Render(height, width, colours int) {
 			curr_pt = start_pt
 		} else {
 			// Expensive!
-			curr_pt_index := Select(colour_list[i], unfilled, width)
+			curr_pt_index := Select(colour_list[i], unfilled, width, neighbour_list, img)
 			curr_pt = unfilled[curr_pt_index]
 
 			// Discard point
@@ -64,7 +62,7 @@ func Render(height, width, colours int) {
 		}
 	}
 
-	Save(fmt.Sprintf("rbsmoke%08d.png", height*width), height, width)
+	Save(fmt.Sprintf("rbsmoke%08d.png", height*width), height, width, img)
 
 	fmt.Println("Done!")
 
