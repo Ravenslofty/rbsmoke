@@ -17,7 +17,7 @@ func MakeNRGBA(r, g, b, colours int) color.NRGBA {
 }
 
 func MakeColorful(a color.NRGBA) colorful.Color {
-	return colorful.Color{float64(a.R) / 255.0, float64(a.G) / 255.0, float64(a.B) / 255.0}
+	return colorful.Color{R: float64(a.R) / 255.0, G: float64(a.G) / 255.0, B: float64(a.B) / 255.0}
 }
 
 func ColourDiffRgb(a, b color.NRGBA) int32 {
